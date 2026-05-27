@@ -441,12 +441,14 @@
         <div><span class="t-prompt">❯ </span><span class="t-cmd">python causal_alpha.py --ticker SPX --signal SMA --window 20</span></div>
         <div class="t-out">  Loading SPX daily OHLCV  [2005-01-01 → 2024-12-31] ...</div>
         <div class="t-out">  Feature engineering      [SMA-20 signal + 4 confounders] ...</div>
-        <div class="t-out">  Naive ATE (SMA-20):      <span class="t-warn">-0.0482%</span>  ← confounded</div>
+        <div class="t-out">  Naive ATE (SMA-20):      <span class="t-warn">-0.0482%</span>  ← confounded by market regime</div>
         <div class="t-out">  Building DAG             [VIX → regime → SMA-20 → fwd_ret] ...</div>
         <div class="t-out">  Running estimator battery [IPW · DML · X-Learner · CausalForest] ...</div>
-        <div class="t-out">  Causal ATE (DML):        <span class="t-good">+0.0031%</span></div>
-        <div class="t-out">  Placebo p-value:         <span class="t-warn">0.34</span>  → not significant</div>
-        <div><span class="t-prompt">❯ </span><span class="t-hi">VERDICT: </span><span class="t-warn">FAIL</span><span class="t-out"> — alpha does not survive causal adjustment</span></div>
+        <div class="t-out">  LinearBackdoor ATE:      <span class="t-good">+0.1582%</span></div>
+        <div class="t-out">  DoubleML ATE:            <span class="t-good">+0.1443%</span></div>
+        <div class="t-out">  CausalForest ATE:        <span class="t-warn">-0.0039%</span>  ← nonparametric</div>
+        <div class="t-out">  Placebo p-value:         <span class="t-good">0.98</span>  ← robustness check passes</div>
+        <div><span class="t-prompt">❯ </span><span class="t-hi">VERDICT: </span><span class="t-warn">CONDITIONAL</span><span class="t-out"> — parametric estimators support signal; nonparametric mixed</span></div>
         <div><span class="t-prompt">❯ </span><span class="t-cursor"></span></div>
       </div>
     </div>
@@ -491,47 +493,79 @@
           </div>
         </div>
         <div class="card-verdict">
-          <div class="cv-label">Key findings</div>
+          <div class="cv-label">Key findings — SMA-20</div>
           <div class="cv-row"><span class="cv-key">Naive ATE</span><span class="cv-val-red">−0.0482%</span></div>
-          <div class="cv-row"><span class="cv-key">Causal ATE (DML)</span><span class="cv-val-grn">+0.0031%</span></div>
-          <div class="cv-row"><span class="cv-key">Placebo p-val</span><span class="cv-val-yel">0.34</span></div>
-          <div class="cv-row"><span class="cv-key">Verdict</span><span class="cv-val-yel">FAIL</span></div>
+          <div class="cv-row"><span class="cv-key">LinearBackdoor</span><span class="cv-val-grn">+0.1582%</span></div>
+          <div class="cv-row"><span class="cv-key">DoubleML</span><span class="cv-val-grn">+0.1443%</span></div>
+          <div class="cv-row"><span class="cv-key">CausalForest</span><span class="cv-val-red">−0.0039%</span></div>
+          <div class="cv-row"><span class="cv-key">Placebo p-val</span><span class="cv-val-grn">0.98</span></div>
+          <div class="cv-row"><span class="cv-key">Verdict</span><span class="cv-val-yel">CONDITIONAL</span></div>
         </div>
       </div>
 
-      <!-- RentWise -->
+      <!-- Macro Dashboard -->
       <div class="card">
         <div class="card-top">
-          <span class="card-icon">🏘️</span>
-          <span class="card-name">RentWise</span>
-          <span class="card-status status-wip">◎ in progress</span>
+          <span class="card-icon">📊</span>
+          <span class="card-name">
+            <a href="https://rentwise-projectgit-t9dqhfante6dtzzo4qglur.streamlit.app/" target="_blank">Macro Market Intelligence Dashboard ↗</a>
+          </span>
+          <span class="card-status status-live">● live</span>
         </div>
         <p class="card-desc">
-          Real estate data science project — rent pricing models, geospatial feature
-          engineering, and demand forecasting for housing markets.
+          Production-grade Streamlit app monitoring 27 assets across equities, rates,
+          FX, crypto, and commodities in real time. Multi-source pipeline: yfinance,
+          Kraken (crypto), FRED API (yield curve), and Polymarket (macro event
+          probabilities). Regime engine classifies the tape as Risk-On/Off using
+          cross-asset signals; deterministic alert system fires on rate shocks,
+          risk-off confirmation, curve steepening, and BTC outperformance.
         </p>
         <div class="card-tags">
-          <span class="tag">Geospatial</span>
-          <span class="tag">XGBoost</span>
-          <span class="tag">Feature Engineering</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">FRED API</span>
+          <span class="tag">Kraken</span>
+          <span class="tag">Polymarket</span>
+          <span class="tag">Macro Regime</span>
+          <span class="tag">Yield Curve</span>
+          <span class="tag">27 assets</span>
+        </div>
+        <div style="margin-top:12px;">
+          <a href="https://rentwise-projectgit-t9dqhfante6dtzzo4qglur.streamlit.app/" target="_blank" style="font-size:11px; font-family:var(--mono); color:var(--accent2); border:1px solid rgba(63,185,80,0.3); padding:3px 10px; border-radius:4px; text-decoration:none;">▶ Open live app</a>
+          <a href="https://github.com/sabya-chow/macro_dashboard" target="_blank" style="font-size:11px; font-family:var(--mono); color:var(--muted); border:1px solid var(--border); padding:3px 10px; border-radius:4px; text-decoration:none; margin-left:8px;">⌥ GitHub</a>
         </div>
       </div>
 
-      <!-- Coming soon -->
+      <!-- Prostate PI-RADS VAE -->
       <div class="card">
         <div class="card-top">
-          <span class="card-icon">📡</span>
-          <span class="card-name">Time Series &amp; Spectral Models</span>
-          <span class="card-status status-planned">○ coming soon</span>
+          <span class="card-icon">🧬</span>
+          <span class="card-name">
+            <a href="https://huggingface.co/spaces/sabyachow/prostate-pirads-vae" target="_blank">Prostate MRI PI-RADS Predictor ↗</a>
+          </span>
+          <span class="card-status status-live">● live</span>
         </div>
         <p class="card-desc">
-          ARFIMA, spectral density estimation, and long-memory process modeling
-          applied to financial time series.
+          Physics-aware VAE that predicts PI-RADS 1–5 cancer risk scores from
+          prostate MRI slices (T2, ADC, BVAL). CNN encoder compresses each slice
+          into a latent space used simultaneously for image reconstruction and
+          risk classification — the reconstruction loss acts as a regulariser that
+          forces the latent representation to retain clinically meaningful structure.
+          Built at Uncommon Hacks 2026 (Social Impact Track) with a UChicago team of 4.
+          Deployed on HuggingFace Spaces; trained on NYU fastMRI prostate dataset.
         </p>
         <div class="card-tags">
-          <span class="tag">ARFIMA</span>
-          <span class="tag">Spectral Density</span>
-          <span class="tag">Long Memory</span>
+          <span class="tag">VAE</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag">Medical AI</span>
+          <span class="tag">Gradio</span>
+          <span class="tag">HuggingFace</span>
+          <span class="tag">NYU fastMRI</span>
+          <span class="tag">Hackathon 🏆</span>
+        </div>
+        <div style="margin-top:12px;">
+          <a href="https://huggingface.co/spaces/sabyachow/prostate-pirads-vae" target="_blank" style="font-size:11px; font-family:var(--mono); color:var(--accent2); border:1px solid rgba(63,185,80,0.3); padding:3px 10px; border-radius:4px; text-decoration:none;">▶ Open live app</a>
+          <a href="https://youtu.be/KXggjb2rBts" target="_blank" style="font-size:11px; font-family:var(--mono); color:var(--warn); border:1px solid rgba(210,153,34,0.3); padding:3px 10px; border-radius:4px; text-decoration:none; margin-left:8px;">▷ Demo video</a>
+          <a href="https://github.com/sabya-chow/prostate-pirads-vae" target="_blank" style="font-size:11px; font-family:var(--mono); color:var(--muted); border:1px solid var(--border); padding:3px 10px; border-radius:4px; text-decoration:none; margin-left:8px;">⌥ GitHub</a>
         </div>
       </div>
 
