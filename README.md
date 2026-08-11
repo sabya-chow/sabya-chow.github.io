@@ -15,6 +15,7 @@ This is a personal portfolio website built with HTML, hosted on GitHub Pages at 
 - Clean, responsive design
 - Showcases projects and work experience
 - Professional portfolio presentation
+- Links to the live Causal Strategy Harness and its open-source repository
 
 ## 🌐 Accessing the Site
 
@@ -41,4 +42,4 @@ For inquiries or collaboration opportunities, feel free to reach out through Git
 
 ---
 
-**Last updated:** 2026-05-27
+**Last updated:** 2026-08-11
