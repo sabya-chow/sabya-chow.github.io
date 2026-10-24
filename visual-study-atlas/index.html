@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visual Study Atlas · Sabyasachi Chowdhury</title>
+  <meta name="description" content="Visual Study Atlas: an open-source Claude Code skill that turns books, papers and notes into an offline, diagram-first study atlas with scored quizzes, a local page-cited ask box, flashcards and a mind map." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117; --bg2:#161b22; --bg3:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --accent2:#3fb950; --warn:#d29922;
+            --mono:'JetBrains Mono','Fira Code','Cascadia Code',monospace; --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.7; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .container { max-width:860px; margin:0 auto; padding:0 24px; }
+    section { padding:56px 0; } section + section { border-top:1px solid var(--border); }
+    nav { position:sticky; top:0; z-index:100; background:rgba(13,17,23,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .nav-inner { max-width:860px; margin:0 auto; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-brand { font-family:var(--mono); font-size:13px; color:var(--accent); }
+    .nav-links { display:flex; gap:24px; list-style:none; } .nav-links a { font-size:13px; color:var(--muted); } .nav-links a:hover { color:var(--text); text-decoration:none; }
+    .eyebrow { font-family:var(--mono); font-size:12px; color:var(--accent2); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
+    h1 { font-size:clamp(32px,5vw,46px); line-height:1.15; letter-spacing:-.5px; margin-bottom:14px; }
+    h2 { font-size:22px; margin-bottom:6px; } .sub { color:var(--muted); margin-bottom:22px; max-width:680px; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:3px 10px; border-radius:20px; background:rgba(88,166,255,.12); color:var(--accent); border:1px solid rgba(88,166,255,.25); }
+    .pill.g { background:rgba(63,185,80,.12); color:var(--accent2); border-color:rgba(63,185,80,.25); } .pill.y { background:rgba(210,153,34,.12); color:var(--warn); border-color:rgba(210,153,34,.25); }
+    .lead { font-size:16px; color:var(--muted); max-width:680px; margin-bottom:26px; } .lead strong { color:var(--text); }
+    .cta { display:flex; flex-wrap:wrap; gap:12px; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:6px; font-size:13px; font-weight:600; }
+    .btn:hover { opacity:.85; text-decoration:none; } .btn-primary { background:var(--accent); color:#0d1117; } .btn-outline { border:1px solid var(--border); color:var(--text); }
+    .video { position:relative; width:100%; aspect-ratio:16/9; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:#000; }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .cap { font-size:12px; color:var(--muted); margin-top:8px; font-family:var(--mono); }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; } .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+    @media (max-width:700px) { .grid3, .grid2 { grid-template-columns:1fr; } }
+    .card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px 18px; }
+    .card h3 { font-size:14px; margin-bottom:6px; } .card p, .card li { font-size:13px; color:var(--muted); line-height:1.6; }
+    .card .fix { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); color:var(--text); font-size:13px; }
+    .steps { list-style:none; counter-reset:s; display:grid; gap:10px; }
+    .steps li { counter-increment:s; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:12px 16px 12px 52px; position:relative; font-size:13.5px; color:var(--muted); }
+    .steps li::before { content:counter(s); position:absolute; left:16px; top:10px; width:26px; height:26px; border-radius:50%; background:var(--bg3); color:var(--accent); font-family:var(--mono); font-size:12px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); }
+    .steps li strong { color:var(--text); }
+    .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; } @media (max-width:700px) { .gallery { grid-template-columns:1fr; } }
+    .gallery figure { background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .gallery img { width:100%; display:block; } .gallery figcaption { font-size:12px; color:var(--muted); padding:8px 12px; font-family:var(--mono); }
+    table { width:100%; border-collapse:collapse; font-size:13px; } th, td { text-align:left; padding:9px 12px; border:1px solid var(--border); vertical-align:top; } th { background:var(--bg3); font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; } td { color:var(--muted); } td:first-child { color:var(--text); font-weight:600; white-space:nowrap; }
+    pre { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:14px 16px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--text); margin:10px 0; }
+    ul.plain { margin-left:20px; color:var(--muted); font-size:14px; } ul.plain li { margin:6px 0; } ul.plain strong { color:var(--text); }
+    .disclaimer { padding:13px 16px; background:rgba(210,153,34,.10); border:1px solid rgba(210,153,34,.35); border-left:4px solid var(--warn); border-radius:6px; font-size:12px; line-height:1.65; margin:26px 0 24px; } .disclaimer strong { color:var(--warn); }
+    footer { border-top:1px solid var(--border); padding:20px 24px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); }
+  </style>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-brand" href="../">~/sabya-chow</a>
+  <ul class="nav-links"><li><a href="#video">Video</a></li><li><a href="#how">How it works</a></li><li><a href="#install">Install</a></li><li><a href="demo/index.html">Live demo</a></li><li><a href="https://github.com/sabya-chow/visual-study-atlas" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div></nav>
+
+<section id="top" style="padding-top:72px">
+  <div class="container">
+    <div class="eyebrow">// open source · claude code skill · local-first</div>
+    <h1>Visual Study Atlas</h1>
+    <div class="pills"><span class="pill">Claude Code skill</span><span class="pill g">Offline once built</span><span class="pill y">MIT licence</span><span class="pill">Quizzes · Diagrams · Flashcards</span></div>
+    <p class="lead">Turn a <strong>book, paper, lecture transcript, notes or a code repository</strong> into a diagram-first study atlas: one page per chapter, hand-built diagrams, definition tables, a coverage checklist, scored quizzes, flashcards for Anki, a mind map, and an ask box that runs on a model on <strong>your own computer</strong> and cites the page of your source.</p>
+    <div class="cta">
+      <a href="#video" class="btn btn-primary">▶ Watch the walkthrough</a>
+      <a href="demo/index.html" class="btn btn-outline">Open the live demo atlas</a>
+      <a href="https://github.com/sabya-chow/visual-study-atlas" target="_blank" rel="noopener" class="btn btn-outline">⌥ GitHub</a>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="container">
+    <h2>Full walkthrough (8.5 min)</h2>
+    <p class="sub">Why it exists, what you need (including Ollama), a full install from scratch with real terminal output, the first run, and every feature of the finished atlas.</p>
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/OQDGLh198Qs" title="Visual Study Atlas: full install and demo" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap">The whole video uses a text-to-speech voice. Terminal scenes are real output captured from a clean folder; app scenes are real screen captures of the demo atlas. <a href="https://youtu.be/OQDGLh198Qs" target="_blank" rel="noopener">Open on YouTube ↗</a></p>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <h2>Why it exists</h2>
+    <p class="sub">Three problems with studying a long, dense book, and what the atlas does about each.</p>
+    <div class="grid3">
+      <div class="card"><h3>Missed concepts</h3><p>You finish a chapter and still miss things.</p><div class="fix"><strong>Fix:</strong> a coverage checklist closes every section, so you can see nothing was skipped.</div></div>
+      <div class="card"><h3>Passive reading</h3><p>Reading does not show whether you can answer in your test's style.</p><div class="fix"><strong>Fix:</strong> scored quizzes in a style you choose once for the whole project.</div></div>
+      <div class="card"><h3>Getting stuck</h3><p>You leave the page to search and lose the thread.</p><div class="fix"><strong>Fix:</strong> an ask box that answers from your own source, privately, with the page cited.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <h2>What you get</h2>
+    <p class="sub">Everything except the pilot is optional.</p>
+    <div class="grid3">
+      <div class="card"><h3>Pilot first</h3><p>One small chapter plus a questionnaire (max 25 questions) before the full build; your answers are frozen as the spec.</p></div>
+      <div class="card"><h3>Hand-built diagrams</h3><p>Pipelines, loops, architectures and charts drawn to scale; an overflow checker catches spilled labels.</p></div>
+      <div class="card"><h3>Coverage checklist</h3><p>Closes every section; anything outside the source is flagged "Beyond the book: verify".</p></div>
+      <div class="card"><h3>Scored quizzes</h3><p>Exam-style scenarios, plain recall or true/false; instant explanation, score, retry missed.</p></div>
+      <div class="card"><h3>Local ask box</h3><p>Click any sentence or diagram box and ask. Runs on Ollama on your machine; answers cite <code>Textbook p.N</code>.</p></div>
+      <div class="card"><h3>Source page links</h3><p>Every section links to the page of your own PDF where it starts, with sub-topic chips.</p></div>
+      <div class="card"><h3>Anki flashcards</h3><p>Definitions, self-checks and quiz items exported as a file Anki imports; Anki handles spaced repetition.</p></div>
+      <div class="card"><h3>Mind map</h3><p>Built from the sections and checklists; click a section to see its checklist.</p></div>
+      <div class="card"><h3>Step-through diagrams</h3><p>Flow diagrams can be stepped through one box at a time, with a caption per step.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="container">
+    <h2>See it</h2>
+    <p class="sub">Screens from the demo atlas, built from an original three-page text about home budgeting. <a href="demo/index.html">Open the live, read-only copy →</a></p>
+    <div class="gallery">
+      <figure><img src="img/app_diagram.png" alt="A diagram section with a link to the source page" loading="lazy" /><figcaption>One claim, one picture, a link to your source page</figcaption></figure>
+      <figure><img src="img/app_step.png" alt="A flow diagram being stepped through" loading="lazy" /><figcaption>Step through a flow diagram, one box at a time</figcaption></figure>
+      <figure><img src="img/app_quiz.png" alt="A scored scenario quiz with explanations" loading="lazy" /><figcaption>Scored scenario quizzes with explanations</figcaption></figure>
+      <figure><img src="img/app_ask.png" alt="The ask box answering with a cited source page" loading="lazy" /><figcaption>Local ask box; the answer cites the source page</figcaption></figure>
+      <figure><img src="img/app_mindmap.png" alt="The mind map page" loading="lazy" /><figcaption>Mind map built from the same structure</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <h2>How it works: two passes</h2>
+    <p class="sub">The skill stops after the pilot so you can steer before the full build.</p>
+    <ol class="steps">
+      <li><strong>Read.</strong> It reads your material and learns its structure.</li>
+      <li><strong>Pilot.</strong> It picks one small chapter at random, builds it, and writes a questionnaire workbook (at most 25 questions).</li>
+      <li><strong>You answer.</strong> Purpose, depth, quiz style, how you want it delivered. Then it stops.</li>
+      <li><strong>Freeze.</strong> Your answers become the specification; nothing changes without asking you.</li>
+      <li><strong>Build.</strong> The full atlas, chapter by chapter, every diagram checked.</li>
+      <li><strong>Deliver.</strong> A local folder you open in the browser (double-click the launcher and keep that window open).</li>
+    </ol>
+  </div>
+</section>
+
+<section id="requirements">
+  <div class="container">
+    <h2>What you need</h2>
+    <p class="sub">Tested on macOS only.</p>
+    <table>
+      <tr><th>Need</th><th>Why</th></tr>
+      <tr><td>Claude Code</td><td>Runs the skill (installed as a plugin).</td></tr>
+      <tr><td>Python 3.9+</td><td>With <code>openpyxl</code> and <code>pypdf</code>; the skill's scripts use them.</td></tr>
+      <tr><td>Your source</td><td>For page links and cited answers it must be a PDF with a text layer, not a scan.</td></tr>
+      <tr><td>A web browser</td><td>To read the atlas.</td></tr>
+      <tr><td>Ollama (optional)</td><td>Runs the local models behind the ask box. Used here: <code>qwen3.5:9b</code> (6.6 GB, quick), <code>gpt-oss:20b</code> (13 GB, default and deeper), <code>nomic-embed-text</code> (274 MB, embeddings). Set the names in <code>config.json</code>; bigger models answer better but need more memory and are slower.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="install">
+  <div class="container">
+    <h2>Install and try it</h2>
+    <p class="sub">Inside Claude Code:</p>
+<pre>/plugin marketplace add sabya-chow/visual-study-atlas
+/plugin install visual-study-atlas@visual-study-atlas-marketplace</pre>
+    <p class="sub" style="margin-top:14px">Packages and the demo:</p>
+<pre>python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install openpyxl pypdf
+git clone https://github.com/sabya-chow/visual-study-atlas
+cd visual-study-atlas/examples/demo/app &amp;&amp; python3 server.py   # then open http://127.0.0.1:8801</pre>
+    <p class="sub">Then run <code>/visual-study-atlas</code> on your own material. Full steps with real output are in the video above and in the <a href="https://github.com/sabya-chow/visual-study-atlas#readme" target="_blank" rel="noopener">README</a>.</p>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="container">
+    <h2>Honest limits, copyright and licence</h2>
+    <ul class="plain">
+      <li><strong>Local models can be wrong.</strong> Check facts against your source.</li>
+      <li><strong>Page links</strong> land on the page where a heading starts, not on the paragraph, and need a PDF with a text layer.</li>
+      <li><strong>Reference videos</strong> are picks by title and channel, not watched.</li>
+      <li><strong>Step-through</strong> suits flow diagrams, not tables. A full build takes time and Claude usage, so start with the pilot.</li>
+      <li><strong>Copyright.</strong> The repository holds tools and original demo content only. Use sources you are allowed to use and do not publish atlases built from copyrighted books. Not affiliated with any exam body, publisher or model vendor. Code is MIT licensed; the demo content is CC0.</li>
+    </ul>
+    <div class="disclaimer"><strong>Academic project disclaimer:</strong> This website and the projects linked here are academic and personal learning projects only. Views expressed are strictly personal and are not to be construed as the views, policy, endorsement, or advice of my organization or employer.</div>
+    <div class="cta">
+      <a href="https://github.com/sabya-chow/visual-study-atlas" target="_blank" rel="noopener" class="btn btn-primary">⌥ Repository</a>
+      <a href="https://youtu.be/OQDGLh198Qs" target="_blank" rel="noopener" class="btn btn-outline">▷ YouTube</a>
+      <a href="demo/index.html" class="btn btn-outline">Live demo atlas</a>
+      <a href="../" class="btn btn-outline">← Back to home</a>
+    </div>
+  </div>
+</section>
+
+<footer><span>Sabyasachi Chowdhury · sabya-chow.github.io · Visual Study Atlas</span></footer>
+</body>
+</html>

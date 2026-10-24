@@ -8,7 +8,8 @@ This is a personal portfolio website built with HTML, hosted on GitHub Pages at 
 
 ## 📁 Repository Structure
 
-- **index.html** - Main portfolio page
+- **index.html** - Main portfolio page (featured project at the top)
+- **visual-study-atlas/** - Project page for Visual Study Atlas (embedded video, install, features) and a read-only hosted demo atlas in `visual-study-atlas/demo/`
 
 ## 🚀 Features
 
@@ -16,6 +17,7 @@ This is a personal portfolio website built with HTML, hosted on GitHub Pages at 
 - Showcases projects and work experience
 - Professional portfolio presentation
 - Links to the live Causal Strategy Harness and its open-source repository
+- Featured: Visual Study Atlas, an open-source Claude Code skill (project page, 8.5-minute walkthrough, live demo)
 
 ## 🌐 Accessing the Site
 
@@ -42,4 +44,4 @@ For inquiries or collaboration opportunities, feel free to reach out through Git
 
 ---
 
-**Last updated:** 2026-08-11
+**Last updated:** 2026-10-24

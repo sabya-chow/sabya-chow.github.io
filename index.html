@@ -355,6 +355,24 @@
       margin-bottom: 24px;
     }
 
+
+
+    .announce { background:rgba(88,166,255,0.10); border-bottom:1px solid rgba(88,166,255,0.25); text-align:center; padding:8px 16px; font-size:13px; }
+    .announce a { color:var(--text); } .announce strong { color:var(--accent2); font-family:var(--mono); font-size:11px; letter-spacing:1px; margin-right:8px; }
+    /* ── Featured project ─────────────────────────────────── */
+    .feature { display:grid; grid-template-columns:1.05fr 1fr; gap:24px; align-items:center; background:var(--bg2); border:1px solid var(--accent); border-radius:10px; padding:22px; }
+    @media (max-width: 700px) { .feature { grid-template-columns:1fr; } }
+    .feature-thumb { display:block; border:1px solid var(--border); border-radius:8px; overflow:hidden; position:relative; }
+    .feature-thumb img { width:100%; display:block; }
+    .feature-thumb .play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(13,17,23,.35); font-size:44px; color:#fff; }
+    .feature-title { font-size:22px; font-weight:700; margin:4px 0 8px; }
+    .feature-desc { font-size:13.5px; color:var(--muted); line-height:1.65; }
+    .feature-desc strong { color:var(--text); }
+    .feature .card-tags { margin-top:12px; }
+    .feature-links { margin-top:14px; display:flex; flex-wrap:wrap; gap:8px; }
+    .feature-links a { font-size:11.5px; font-family:var(--mono); padding:4px 11px; border-radius:4px; text-decoration:none; border:1px solid var(--border); color:var(--muted); }
+    .feature-links a.go { color:var(--accent2); border-color:rgba(63,185,80,.3); }
+
     footer {
       border-top: 1px solid var(--border);
       padding: 20px 24px;
@@ -372,6 +390,7 @@
   <div class="nav-inner">
     <span class="nav-brand">~/sabya-chow</span>
     <ul class="nav-links">
+      <li><a href="#featured">Featured</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -379,6 +398,8 @@
     </ul>
   </div>
 </nav>
+
+<div class="announce"><strong>NEW</strong><a href="#featured">Visual Study Atlas: open-source Claude Code skill that turns books into offline study atlases · watch the 8.5-min walkthrough →</a></div>
 
 <div class="disclaimer">
   <strong>Academic project disclaimer:</strong>
@@ -396,7 +417,6 @@
 
     <div class="hero-titles">
       <span class="pill pill-blue">MS Applied Data Science · UChicago</span>
-      <span class="pill pill-green">Reserve Bank of India</span>
       <span class="pill pill-gold">Bayesian Methods · Financial Risk · ML</span>
     </div>
 
@@ -408,11 +428,49 @@
     </p>
 
     <div class="cta-row">
-      <a href="#projects" class="btn btn-primary">↓ View Projects</a>
+      <a href="#featured" class="btn btn-primary">★ Featured: Visual Study Atlas</a>
+      <a href="#projects" class="btn btn-outline">↓ View Projects</a>
       <a href="mailto:sabyachow@gmail.com" class="btn btn-outline">✉ Get in touch</a>
       <a href="https://github.com/sabya-chow" class="btn btn-outline" target="_blank">⌥ GitHub</a>
     </div>
 
+  </div>
+</section>
+
+<!-- ── Featured ───────────────────────────────────────────── -->
+<section id="featured">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">★ Featured project</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="feature">
+      <a class="feature-thumb" href="visual-study-atlas/" aria-label="Open the Visual Study Atlas project page">
+        <img src="https://i.ytimg.com/vi/OQDGLh198Qs/maxresdefault.jpg" alt="Visual Study Atlas: from book to atlas" loading="lazy" />
+        <span class="play">▶</span>
+      </a>
+      <div>
+        <div class="card-top"><span class="card-icon">🗺️</span><span class="card-status status-live">● open source</span></div>
+        <div class="feature-title"><a href="visual-study-atlas/" style="color:inherit">Visual Study Atlas</a></div>
+        <p class="feature-desc">
+          A <strong>Claude Code skill</strong> that turns a book, paper, transcript or repository into an
+          offline, diagram-first study atlas: hand-built diagrams, a coverage checklist per section,
+          <strong>scored quizzes</strong>, Anki flashcards, a mind map, and an ask box that runs on a
+          <strong>local model</strong> and cites the page of your own source. It starts with a pilot and a
+          questionnaire, so you steer before the full build. Includes an 8.5-minute install-to-use walkthrough.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Claude Code</span><span class="tag">Ollama</span><span class="tag">Local-first</span>
+          <span class="tag">Quizzes</span><span class="tag">Anki</span><span class="tag">MIT</span>
+        </div>
+        <div class="feature-links">
+          <a class="go" href="visual-study-atlas/">▶ Project page &amp; video</a>
+          <a href="visual-study-atlas/demo/index.html">Live demo atlas</a>
+          <a href="https://github.com/sabya-chow/visual-study-atlas" target="_blank" rel="noopener noreferrer">⌥ GitHub</a>
+          <a href="https://youtu.be/OQDGLh198Qs" target="_blank" rel="noopener noreferrer">▷ YouTube</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -577,7 +635,7 @@
     <div class="about-grid">
       <div class="about-bio">
         <p>
-          I am a central banker at the <strong>Reserve Bank of India</strong> and currently
+          I am a central banker and currently
           pursuing an <strong>MS in Applied Data Science at the University of Chicago</strong>.
           My work sits at the intersection of Bayesian statistics, machine learning,
           causal inference, and macro-financial risk.
