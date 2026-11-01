@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Picture Says a Thousand Words · Sabyasachi Chowdhury</title>
+  <meta name="description" content="An open-source Claude Code skill that turns one question into one offline tabbed page: animation, interactive app, diagram, flow map, derivation and a short recap. Idea from a public post by Andrej Karpathy; not affiliated." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#0d1117; --bg2:#161b22; --bg3:#21262d; --border:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --accent2:#3fb950; --warn:#d29922;
+            --mono:'JetBrains Mono','Fira Code','Cascadia Code',monospace; --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.7; }
+    a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+    .container { max-width:860px; margin:0 auto; padding:0 24px; }
+    section { padding:56px 0; } section + section { border-top:1px solid var(--border); }
+    nav { position:sticky; top:0; z-index:100; background:rgba(13,17,23,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .nav-inner { max-width:860px; margin:0 auto; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; }
+    .nav-brand { font-family:var(--mono); font-size:13px; color:var(--accent); }
+    .nav-links { display:flex; gap:24px; list-style:none; } .nav-links a { font-size:13px; color:var(--muted); } .nav-links a:hover { color:var(--text); text-decoration:none; }
+    .eyebrow { font-family:var(--mono); font-size:12px; color:var(--accent2); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px; }
+    h1 { font-size:clamp(32px,5vw,46px); line-height:1.15; letter-spacing:-.5px; margin-bottom:14px; }
+    h2 { font-size:22px; margin-bottom:6px; } .sub { color:var(--muted); margin-bottom:22px; max-width:680px; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .pill { font-family:var(--mono); font-size:11px; padding:3px 10px; border-radius:20px; background:rgba(88,166,255,.12); color:var(--accent); border:1px solid rgba(88,166,255,.25); }
+    .pill.g { background:rgba(63,185,80,.12); color:var(--accent2); border-color:rgba(63,185,80,.25); } .pill.y { background:rgba(210,153,34,.12); color:var(--warn); border-color:rgba(210,153,34,.25); }
+    .lead { font-size:16px; color:var(--muted); max-width:680px; margin-bottom:26px; } .lead strong { color:var(--text); }
+    .cta { display:flex; flex-wrap:wrap; gap:12px; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:6px; font-size:13px; font-weight:600; }
+    .btn:hover { opacity:.85; text-decoration:none; } .btn-primary { background:var(--accent); color:#0d1117; } .btn-outline { border:1px solid var(--border); color:var(--text); }
+    .video { position:relative; width:100%; aspect-ratio:16/9; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:#000; }
+    .video iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+    .cap { font-size:12px; color:var(--muted); margin-top:8px; font-family:var(--mono); }
+    .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; } .grid2 { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+    @media (max-width:700px) { .grid3, .grid2 { grid-template-columns:1fr; } }
+    .card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:16px 18px; }
+    .card h3 { font-size:14px; margin-bottom:6px; } .card p, .card li { font-size:13px; color:var(--muted); line-height:1.6; }
+    .card .fix { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); color:var(--text); font-size:13px; }
+    .steps { list-style:none; counter-reset:s; display:grid; gap:10px; }
+    .steps li { counter-increment:s; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:12px 16px 12px 52px; position:relative; font-size:13.5px; color:var(--muted); }
+    .steps li::before { content:counter(s); position:absolute; left:16px; top:10px; width:26px; height:26px; border-radius:50%; background:var(--bg3); color:var(--accent); font-family:var(--mono); font-size:12px; display:flex; align-items:center; justify-content:center; border:1px solid var(--border); }
+    .steps li strong { color:var(--text); }
+    .gallery { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; } @media (max-width:700px) { .gallery { grid-template-columns:1fr; } }
+    .gallery figure { background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .gallery img { width:100%; display:block; } .gallery figcaption { font-size:12px; color:var(--muted); padding:8px 12px; font-family:var(--mono); }
+    table { width:100%; border-collapse:collapse; font-size:13px; } th, td { text-align:left; padding:9px 12px; border:1px solid var(--border); vertical-align:top; } th { background:var(--bg3); font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; } td { color:var(--muted); } td:first-child { color:var(--text); font-weight:600; white-space:nowrap; }
+    pre { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:14px 16px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--text); margin:10px 0; }
+    ul.plain { margin-left:20px; color:var(--muted); font-size:14px; } ul.plain li { margin:6px 0; } ul.plain strong { color:var(--text); }
+    .disclaimer { padding:13px 16px; background:rgba(210,153,34,.10); border:1px solid rgba(210,153,34,.35); border-left:4px solid var(--warn); border-radius:6px; font-size:12px; line-height:1.65; margin:26px 0 24px; } .disclaimer strong { color:var(--warn); }
+    footer { border-top:1px solid var(--border); padding:20px 24px; text-align:center; font-family:var(--mono); font-size:11px; color:var(--muted); }
+  </style>
+</head>
+<body>
+<nav><div class="nav-inner"><a class="nav-brand" href="../">~/sabya-chow</a>
+  <ul class="nav-links"><li><a href="#video">Video</a></li><li><a href="#tabs">The six tabs</a></li><li><a href="#install">Install</a></li><li><a href="demo/index.html">Live demo</a></li><li><a href="https://github.com/sabya-chow/picture-says-a-thousand-words" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div></nav>
+
+<section id="top" style="padding-top:72px">
+  <div class="container">
+    <div class="eyebrow">// open source · claude code skill · works offline</div>
+    <h1>Picture Says a Thousand Words</h1>
+    <div class="pills"><span class="pill">Claude Code skill</span><span class="pill g">Offline page</span><span class="pill y">MIT licence</span><span class="pill">KaTeX · Interactive · Derivation</span></div>
+    <p class="lead">Ask one question and get <strong>one tabbed page</strong>: an animation, an interactive micro-app, a diagram, a clickable flow map, a full first-principles derivation (for maths topics) and a short strict recap. All maths is typeset, every number is checked by code, and an optional <strong>local tutor chat</strong> answers questions about any line you click.</p>
+    <p class="lead" style="font-size:13px">The ladder of formats (writing in ASD-STE100, diagrams, web pages, explainer videos) comes from <a href="https://x.com/karpathy/status/2105819303471976479" target="_blank" rel="noopener">a public post by Andrej Karpathy</a> (1 Oct 2026). This project is independent and not affiliated with or endorsed by him, Anthropic or ASD.</p>
+    <div class="cta">
+      <a href="#video" class="btn btn-primary">▶ Watch the walkthrough</a>
+      <a href="demo/index.html" class="btn btn-outline">Open the live demo page</a>
+      <a href="https://github.com/sabya-chow/picture-says-a-thousand-words" target="_blank" rel="noopener" class="btn btn-outline">⌥ GitHub</a>
+    </div>
+  </div>
+</section>
+
+<section id="video">
+  <div class="container">
+    <h2>Walkthrough (5 min)</h2>
+    <p class="sub">One question: why is 450 hits in 500 so much narrower than 45 hits in 50, when both are 90%? A short lesson with real code, then the same answer as six tabs.</p>
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/5WYgkvJOutk" title="Why is 450/500 narrower than 45/50? Picture Says a Thousand Words" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p class="cap">The narration is a text-to-speech voice. Every number comes from code that runs in the video. <a href="https://youtu.be/5WYgkvJOutk" target="_blank" rel="noopener">Open on YouTube ↗</a></p>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <h2>Why it exists</h2>
+    <p class="sub">Reading model output is the new bottleneck, and plain text is the slowest way to take in an idea.</p>
+    <div class="grid3">
+      <div class="card"><h3>Wall of text</h3><p>The key step is buried in polite padding.</p><div class="fix"><strong>Fix:</strong> climb the ladder: animation, interactive app, diagram, then a short strict recap.</div></div>
+      <div class="card"><h3>Lost thread</h3><p>A long derivation makes you forget where you are.</p><div class="fix"><strong>Fix:</strong> a clickable flow map and a you-are-here bar.</div></div>
+      <div class="card"><h3>Trust</h3><p>Pretty visuals can hide wrong numbers.</p><div class="fix"><strong>Fix:</strong> every number is computed by code before it is written.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="tabs">
+  <div class="container">
+    <h2>The six tabs for one question</h2>
+    <p class="sub">Screens from the demo page. <a href="demo/index.html">Open the live copy →</a> (the page works offline; only the tutor chat needs the local server).</p>
+    <div class="gallery">
+      <figure><img src="img/tab1-animation.png" alt="Animation tab" loading="lazy" /><figcaption>1 Animation: trials arrive, the curve narrows</figcaption></figure>
+      <figure><img src="img/tab2-interactive.png" alt="Interactive tab" loading="lazy" /><figcaption>2 Interactive: change n for both data sets</figcaption></figure>
+      <figure><img src="img/tab3-diagram.png" alt="Diagram tab" loading="lazy" /><figcaption>3 Diagram: a reason on every arrow</figcaption></figure>
+      <figure><img src="img/tab4-flow-map.png" alt="Flow map tab" loading="lazy" /><figcaption>M Flow map: click a step to open it</figcaption></figure>
+      <figure><img src="img/tab5-derivation.png" alt="Derivation tab" loading="lazy" /><figcaption>D Derivation: first principles, you-are-here bar</figcaption></figure>
+      <figure><img src="img/tab6-ste.png" alt="STE recap tab" loading="lazy" /><figcaption>4 Recap: one action per line, one term per thing</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="container">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><strong>Ask first.</strong> The skill asks which modes you want and how deep, then builds them in order.</li>
+      <li><strong>One page.</strong> Every mode is a tab of one offline HTML file with KaTeX inlined.</li>
+      <li><strong>Check.</strong> Every formula must render with zero errors; every number is computed by code.</li>
+      <li><strong>Optional tutor.</strong> A local server on 127.0.0.1 and an Ollama model answer questions about any line you click.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="requirements">
+  <div class="container">
+    <h2>What you need</h2>
+    <p class="sub">Tested on macOS only.</p>
+    <table>
+      <tr><th>Need</th><th>Why</th></tr>
+      <tr><td>Claude Code</td><td>Runs the skill (installed as a plugin).</td></tr>
+      <tr><td>Python 3</td><td>Standard library only; no pip packages.</td></tr>
+      <tr><td>A web browser</td><td>To read the page.</td></tr>
+      <tr><td>Ollama (optional)</td><td>Local models for the tutor chat: <code>qwen3.5:9b</code>, <code>nomic-embed-text</code>. Set names in <code>config.json</code>. The page works in full without it.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="install">
+  <div class="container">
+    <h2>Install and try it</h2>
+    <p class="sub">Inside Claude Code:</p>
+<pre>/plugin marketplace add sabya-chow/picture-says-a-thousand-words
+/plugin install picture-says-a-thousand-words@picture-says-a-thousand-words-marketplace</pre>
+    <p class="sub" style="margin-top:14px">Then ask:</p>
+<pre>a thousand words: explain the central limit theorem</pre>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="container">
+    <h2>Honest limits, credit and licence</h2>
+    <ul class="plain">
+      <li><strong>Local models can be wrong.</strong> Check facts against the page and your sources.</li>
+      <li><strong>STE is followed in spirit,</strong> not certified.</li>
+      <li><strong>Credit.</strong> The idea of the ladder is from a public post by Andrej Karpathy; the code, tabs, derivation, flow map and tutor chat are my own. Not affiliated with him, Anthropic or ASD.</li>
+      <li><strong>Copyright.</strong> The repository holds tools and an original demo. Use sources you are allowed to use. Code is MIT licensed.</li>
+    </ul>
+    <div class="disclaimer"><strong>Academic project disclaimer:</strong> This website and the projects linked here are academic and personal learning projects only. Views expressed are strictly personal and are not to be construed as the views, policy, endorsement, or advice of my organization or employer.</div>
+    <div class="cta">
+      <a href="https://github.com/sabya-chow/picture-says-a-thousand-words" target="_blank" rel="noopener" class="btn btn-primary">⌥ Repository</a>
+      <a href="https://youtu.be/5WYgkvJOutk" target="_blank" rel="noopener" class="btn btn-outline">▷ YouTube</a>
+      <a href="demo/index.html" class="btn btn-outline">Live demo page</a>
+      <a href="../" class="btn btn-outline">← Back to home</a>
+    </div>
+  </div>
+</section>
+
+<footer><span>Sabyasachi Chowdhury · sabya-chow.github.io · Picture Says a Thousand Words</span></footer>
+</body>
+</html>
