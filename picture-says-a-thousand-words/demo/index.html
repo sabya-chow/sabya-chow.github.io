@@ -93,6 +93,8 @@
   #p4 table{border-collapse:collapse;margin:8px 0;font-variant-numeric:tabular-nums}
   #p4 th,#p4 td{border:1px solid var(--bd);padding:6px 12px;text-align:left}#p4 th{color:var(--mut);font-weight:500}
   #p4 .term{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:10px 14px}
+/* reduced motion: no transitions or smooth scrolling */
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 <style>.ask-hov{outline:2px dashed var(--ctl);outline-offset:2px;cursor:help}
 svg .ask-hov{outline:none;stroke:var(--ctl)!important;stroke-width:3}
